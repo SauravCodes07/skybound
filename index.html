@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Skybound — a polished, responsive arcade flight game.">
+  <title>Skybound</title>
+  <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app" aria-label="Skybound game">
+    <canvas id="gameCanvas" aria-label="Skybound game canvas"></canvas>
+
+    <section id="loadingScreen" class="loading-screen" aria-live="polite">
+      <div class="loader-mark"><span></span><span></span><span></span></div>
+      <h1>SKYBOUND</h1>
+      <div class="load-track"><div id="loadBar"></div></div>
+      <p id="loadLabel">Preparing the skies…</p>
+    </section>
+
+    <div id="hud" class="hud hidden">
+      <button id="pauseButton" class="icon-button glass" aria-label="Pause game">Ⅱ</button>
+      <div class="score-cluster">
+        <div id="scoreValue" class="score-value">0</div>
+        <div id="comboValue" class="combo-value"></div>
+      </div>
+      <div class="hud-actions">
+        <button id="muteButton" class="icon-button glass" aria-label="Mute audio">♪</button>
+        <button id="fullscreenButton" class="icon-button glass" aria-label="Fullscreen">⛶</button>
+      </div>
+      <div id="powerupBadge" class="powerup-badge hidden"><span>TIME BEND</span><i></i></div>
+    </div>
+
+    <div id="countdown" class="countdown hidden" aria-live="assertive"></div>
+    <div id="toast" class="toast" aria-live="polite"></div>
+
+    <section id="menuScreen" class="screen menu-screen hidden" data-screen="menu">
+      <div class="menu-topbar">
+        <button class="icon-button glass" data-open="settings" aria-label="Settings">⚙</button>
+        <button class="icon-button glass" data-open="stats" aria-label="Statistics">▥</button>
+      </div>
+      <div class="hero">
+        <div class="eyebrow">ENDLESS ARCADE FLIGHT</div>
+        <h1>SKY<span>BOUND</span></h1>
+        <p>Find your rhythm. Own the sky.</p>
+      </div>
+      <div class="daily-card glass">
+        <div><small>DAILY FLIGHT</small><strong id="dailyText">Score 20 points</strong></div>
+        <div id="dailyProgress" class="daily-progress">0 / 20</div>
+      </div>
+      <div class="menu-actions">
+        <button id="playButton" class="primary-button"><span>PLAY</span><b>›</b></button>
+        <div class="secondary-row">
+          <button class="secondary-button glass" data-open="scores">High Score</button>
+          <button class="secondary-button glass" data-open="instructions">How to Play</button>
+        </div>
+        <div class="tertiary-row">
+          <button class="text-button" data-open="achievements">Achievements</button>
+          <button class="text-button" data-open="credits">Credits</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="pauseScreen" class="screen modal-screen hidden" data-screen="pause">
+      <div class="panel glass">
+        <div class="eyebrow">FLIGHT SUSPENDED</div>
+        <h2>Paused</h2>
+        <button id="resumeButton" class="primary-button"><span>RESUME</span><b>›</b></button>
+        <button id="pauseRestartButton" class="secondary-button">Restart Flight</button>
+        <button id="pauseMenuButton" class="text-button">Return to Menu</button>
+      </div>
+    </section>
+
+    <section id="gameOverScreen" class="screen modal-screen hidden" data-screen="gameover">
+      <div class="panel result-panel glass">
+        <div class="eyebrow">FLIGHT COMPLETE</div>
+        <h2 id="resultTitle">Nice flight</h2>
+        <div class="result-score"><strong id="finalScore">0</strong><span>POINTS</span></div>
+        <div class="result-grid">
+          <div><small>BEST</small><strong id="finalBest">0</strong></div>
+          <div><small>COMBO</small><strong id="finalCombo">0</strong></div>
+          <div><small>GOLDEN</small><strong id="finalGolden">0</strong></div>
+        </div>
+        <div id="newBest" class="new-best hidden">NEW PERSONAL BEST</div>
+        <button id="restartButton" class="primary-button"><span>FLY AGAIN</span><b>↻</b></button>
+        <button id="gameOverMenuButton" class="text-button">Return to Menu</button>
+      </div>
+    </section>
+
+    <section id="settingsScreen" class="screen page-screen hidden" data-screen="settings">
+      <header><button class="back-button" data-back>‹</button><h2>Settings</h2><span></span></header>
+      <div class="page-content">
+        <div class="setting-row glass"><div><strong>Sound Effects</strong><small>Flaps, points and impacts</small></div><button id="soundToggle" class="toggle" role="switch"><i></i></button></div>
+        <div class="setting-row glass"><div><strong>Music</strong><small>Adaptive ambient soundtrack</small></div><button id="musicToggle" class="toggle" role="switch"><i></i></button></div>
+        <div class="setting-row glass"><div><strong>Dark Interface</strong><small>Deeper menus and overlays</small></div><button id="darkToggle" class="toggle" role="switch"><i></i></button></div>
+        <div class="setting-row glass"><div><strong>Reduced Motion</strong><small>Softens shake and transitions</small></div><button id="motionToggle" class="toggle" role="switch"><i></i></button></div>
+        <h3>Bird Style</h3>
+        <div id="skinGrid" class="skin-grid"></div>
+      </div>
+    </section>
+
+    <section id="scoresScreen" class="screen page-screen hidden" data-screen="scores">
+      <header><button class="back-button" data-back>‹</button><h2>High Score</h2><span></span></header>
+      <div class="page-content centered"><div class="trophy">✦</div><div id="highScoreLarge" class="big-number">0</div><p>PERSONAL BEST</p><div id="scoreHistory" class="history-list glass"></div></div>
+    </section>
+
+    <section id="instructionsScreen" class="screen page-screen hidden" data-screen="instructions">
+      <header><button class="back-button" data-back>‹</button><h2>How to Play</h2><span></span></header>
+      <div class="page-content">
+        <div class="instruction-hero"><div class="tap-ripple"><span>▲</span></div><h3>Tap to flap</h3><p>Use touch, click, <kbd>Space</kbd>, or <kbd>↑</kbd>. Thread the gaps without touching pipes or the ground.</p></div>
+        <div class="tip-grid"><article class="glass"><b>×2</b><strong>Build combos</strong><span>Clean passes raise your multiplier.</span></article><article class="glass gold"><b>★</b><strong>Golden pipes</strong><span>Riskier gaps award bonus points.</span></article><article class="glass blue"><b>◉</b><strong>Time bend</strong><span>Collect blue orbs to slow the world.</span></article><article class="glass"><b>Ⅱ</b><strong>Pause anytime</strong><span>Press P, Escape, or the pause button.</span></article></div>
+      </div>
+    </section>
+
+    <section id="creditsScreen" class="screen page-screen hidden" data-screen="credits">
+      <header><button class="back-button" data-back>‹</button><h2>Credits</h2><span></span></header>
+      <div class="page-content centered"><div class="credit-bird">◆</div><h1>SKYBOUND</h1><p>Designed and engineered as a handcrafted Canvas arcade experience.</p><div class="credit-list glass"><span>Game Design</span><strong>OpenAI Codex</strong><span>Technology</span><strong>HTML5 Canvas + Web Audio</strong><span>Edition</span><strong>1.0.0</strong></div></div>
+    </section>
+
+    <section id="statsScreen" class="screen page-screen hidden" data-screen="stats">
+      <header><button class="back-button" data-back>‹</button><h2>Statistics</h2><span></span></header>
+      <div class="page-content"><div id="statsGrid" class="stats-grid"></div></div>
+    </section>
+
+    <section id="achievementsScreen" class="screen page-screen hidden" data-screen="achievements">
+      <header><button class="back-button" data-back>‹</button><h2>Achievements</h2><span></span></header>
+      <div class="page-content"><div id="achievementList" class="achievement-list"></div></div>
+    </section>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
